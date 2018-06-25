@@ -45,11 +45,11 @@ def FFT_torch_simple_signal(x):
     # Perform an O[N^2] DFT on all length-N_min sub-problems at once
     n = Variable(torch.arange(N_min), requires_grad = False).double() # .view(1,N,1)
     k = n[:, None]
-    M_r = torch.cos(-2 * np.pi * n * k / N_min)  # torch.Size([32, 32])
-    M_i = torch.sin(-2 * np.pi * n * k / N_min)  # torch.Size([32, 32])
+    M_r = torch.cos(-2 * np.pi * n * k / N_min)  
+    M_i = torch.sin(-2 * np.pi * n * k / N_min) 
 
-    X_r = torch.mm(M_r, x.view(N_min, -1)) # torch.Size([32, 32])
-    X_i = torch.mm(M_i, x.view(N_min, -1)) # torch.Size([32, 32])
+    X_r = torch.mm(M_r, x.view(N_min, -1)) 
+    X_i = torch.mm(M_i, x.view(N_min, -1)) 
 
     # build-up each level of the recursive calculation all at once
     while X_r.shape[0] < N:
@@ -61,7 +61,7 @@ def FFT_torch_simple_signal(x):
         factor_i = Variable(torch.sin(-1 * np.pi * torch.arange(X_i.shape[0]).double() / X_i.shape[0]), requires_grad = False).double().view(-1,1)
         P_r = factor_r * X_r_odd - factor_i * X_i_odd
         P_i = factor_r * X_i_odd + factor_i * X_r_odd
-        X_r = torch.cat([X_r_even + P_r, X_r_even - P_r]) # stack gives 2x32x16 (wrong) cat 64x16
+        X_r = torch.cat([X_r_even + P_r, X_r_even - P_r]) 
         X_i = torch.cat([X_i_even + P_i, X_i_even - P_i])
 
     R = X_r.data.numpy()
@@ -90,8 +90,8 @@ def FFT_torch(x):
     # Perform an O[N^2] DFT on all length-N_min sub-problems at once
     n = Variable(torch.arange(N_min), requires_grad = False).double().cuda()
     k = n[:, None]
-    M_r = torch.cos(-2 * np.pi * n * k / N_min).view(N_min, -1)#.expand(batch_size,features,N_min,-1)
-    M_i = torch.sin(-2 * np.pi * n * k / N_min).view(N_min, -1)#.expand(batch_size,features,N_min,-1)
+    M_r = torch.cos(-2 * np.pi * n * k / N_min).view(N_min, -1)
+    M_i = torch.sin(-2 * np.pi * n * k / N_min).view(N_min, -1)
     X_r = torch.matmul(M_r, x.view(batch_size, features, N_min, -1))
     X_i = torch.matmul(M_i, x.view(batch_size, features, N_min, -1))
 
@@ -102,9 +102,9 @@ def FFT_torch(x):
         X_i_even = X_i[:,:,:, : X_i.shape[3] // 2]
         X_i_odd =  X_i[:,:,:, X_i.shape[3] // 2:]
         factor_r = Variable(torch.cos(-1 * np.pi * torch.arange(X_r.shape[2]).double() / X_r.shape[2]),
-                            requires_grad = False).cuda().view(-1, 1)#.expand(batch_size,features,-1).contiguous().view(batch_size,features,-1,1)
+                            requires_grad = False).cuda().view(-1, 1)
         factor_i = Variable(torch.sin(-1 * np.pi * torch.arange(X_i.shape[2]).double() / X_i.shape[2]),
-                            requires_grad = False).cuda().view(-1, 1)#.expand(batch_size,features,-1).contiguous().view(batch_size,features,-1,1)
+                            requires_grad = False).cuda().view(-1, 1)
         P_r = factor_r * X_r_odd - factor_i * X_i_odd
         P_i = factor_r * X_i_odd + factor_i * X_r_odd
         X_r = torch.cat([X_r_even + P_r, X_r_even - P_r], dim=2)
@@ -129,8 +129,8 @@ def IFFT_torch(x_r, x_i):
     # Perform an O[N^2] DFT on all length-N_min sub-problems at once
     n = Variable(torch.arange(N_min), requires_grad = False).double().cuda()
     k = n[:, None]
-    M_r = torch.cos(2 * np.pi * n * k / N_min).view(N_min, -1)#.expand(batch_size,features,N_min,-1)
-    M_i = torch.sin(2 * np.pi * n * k / N_min).view(N_min, -1)#.expand(batch_size,features,N_min,-1)
+    M_r = torch.cos(2 * np.pi * n * k / N_min).view(N_min, -1)
+    M_i = torch.sin(2 * np.pi * n * k / N_min).view(N_min, -1)
     X_r = torch.matmul(M_r, x_r.view(batch_size, features, N_min, -1))
     X_i = torch.matmul(M_i, x_i.view(batch_size, features, N_min, -1))
     X_r = X_r - X_i
@@ -143,9 +143,9 @@ def IFFT_torch(x_r, x_i):
         X_i_even = X_i[:,:,:, : X_i.shape[3] // 2]
         X_i_odd =  X_i[:,:,:, X_i.shape[3] // 2:]
         factor_r = Variable(torch.cos(1 * np.pi * torch.arange(X_r.shape[2]).double() / X_r.shape[2]),
-                            requires_grad = False).cuda().view(-1,1)#.expand(batch_size,features,-1).contiguous().view(batch_size,features,-1,1)
+                            requires_grad = False).cuda().view(-1,1)
         factor_i = Variable(torch.sin(1 * np.pi * torch.arange(X_i.shape[2]).double() / X_i.shape[2]),
-                            requires_grad = False).cuda().view(-1,1)#.expand(batch_size,features,-1).contiguous().view(batch_size,features,-1,1)
+                            requires_grad = False).cuda().view(-1,1)
         P_r = factor_r * X_r_odd - factor_i * X_i_odd
         P_i = factor_r * X_i_odd + factor_i * X_r_odd
         X_r = torch.cat([X_r_even + P_r, X_r_even - P_r], dim=2)

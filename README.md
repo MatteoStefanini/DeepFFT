@@ -4,6 +4,6 @@ Experimented in the Fourier domain with Deep Learning architectures for classifi
 
 ## Requirements
 + Python 3.x
-+ Pytorch
++ PyTorch 
 + Anaconda packages
 + Tensorboad-pytorch

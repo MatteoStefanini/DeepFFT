@@ -8,4 +8,4 @@ deepUCF11 is the DeepFFT model training code for Video Action Recognition task o
 + Python 3.x
 + PyTorch 
 + Anaconda packages
-+ Tensorboad-pytorch
++ Tensorboard-pytorch

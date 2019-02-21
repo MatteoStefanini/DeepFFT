@@ -4,7 +4,7 @@ We experimented in the Fourier domain with Deep Learning architectures for class
 
 deepUCF11 is the DeepFFT model training code for Video Action Recognition task over the UCF-11 dataset. Feature folder should contain frame's video features, which we extracted and stored with standard pretrained ResNet-152.
 
-deepVM contains all the models with and without using the FFT tested over the Virtual Machines Dataset. We outperform the state-of-the-art of Virtual Machine Classification with DeepFFT, DeepMix and DeepMix2 models. Paper will be soon available.
+deepVM (available in a separate indipendent repository) contains the models tested over the Virtual Machines Dataset. We outperformed the state-of-the-art for Virtual Machine Identification with DeepConv and DeepFFT models. Paper have been accepted to CLOSER 2019.
 
 ## Requirements
 + Python 3.x
